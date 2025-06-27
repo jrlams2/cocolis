@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, Package, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, Package, ArrowLeft, Shield } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -45,24 +45,39 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onBackToHome, isAdmin =
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}></div>
+      </div>
+
+      {/* Floating Elements */}
+      <div className="absolute top-20 left-10 w-20 h-20 bg-white/5 rounded-full blur-xl animate-pulse"></div>
+      <div className="absolute top-40 right-20 w-32 h-32 bg-blue-400/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
+      <div className="absolute bottom-40 left-1/4 w-24 h-24 bg-indigo-400/10 rounded-full blur-xl animate-pulse delay-2000"></div>
+
       {/* Header Banner */}
-      <div className="bg-white/10 backdrop-blur-sm border-b border-white/20">
+      <div className="relative bg-white/5 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             <div 
-              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity text-white"
+              className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity text-white group"
               onClick={onBackToHome}
             >
-              <div className="bg-white/20 p-2 rounded-lg">
+              <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl border border-white/20 group-hover:bg-white/20 transition-colors">
                 <Package className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold">PackageTravel</span>
+              <div>
+                <span className="text-xl font-bold">PackageTravel</span>
+                <div className="text-xs text-white/70">Premium Transport</div>
+              </div>
             </div>
             
             <button
               onClick={onBackToHome}
-              className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors"
+              className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20 hover:bg-white/20"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>{t('auth.backToHome')}</span>
@@ -72,27 +87,39 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onBackToHome, isAdmin =
       </div>
 
       {/* Login Form */}
-      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="relative flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
-            <h2 className="mt-6 text-3xl font-extrabold text-white">
+            <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium mb-6 ${
+              isAdmin 
+                ? 'bg-red-500/20 text-red-200 border border-red-400/30' 
+                : 'bg-blue-500/20 text-blue-200 border border-blue-400/30'
+            }`}>
+              {isAdmin ? <Shield className="w-4 h-4 mr-2" /> : <Package className="w-4 h-4 mr-2" />}
+              {isAdmin ? 'Administration' : 'Connexion sécurisée'}
+            </div>
+            <h2 className="text-4xl font-bold text-white mb-4">
               {isAdmin ? t('auth.adminLoginTitle') : t('auth.loginTitle')}
             </h2>
+            <p className="text-blue-200">
+              {isAdmin ? 'Accès réservé aux administrateurs' : 'Accédez à votre espace personnel'}
+            </p>
           </div>
           
-          <form className="mt-8 space-y-6 bg-white/95 backdrop-blur-sm p-8 rounded-xl shadow-2xl" onSubmit={handleSubmit}>
+          <form className="mt-8 space-y-6 bg-white/95 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-white/20" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                {error}
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center space-x-2">
+                <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                <span className="text-sm">{error}</span>
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">
                   {t('auth.email')}
                 </label>
-                <div className="mt-1 relative">
+                <div className="relative">
                   <input
                     id="email"
                     name="email"
@@ -101,18 +128,18 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onBackToHome, isAdmin =
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="appearance-none relative block w-full px-3 py-3 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                    placeholder={t('auth.email')}
+                    className="appearance-none relative block w-full px-4 py-4 pl-12 border border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-all duration-300 bg-gray-50 focus:bg-white"
+                    placeholder="votre@email.com"
                   />
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-bold text-gray-700 mb-2">
                   {t('auth.password')}
                 </label>
-                <div className="mt-1 relative">
+                <div className="relative">
                   <input
                     id="password"
                     name="password"
@@ -121,16 +148,16 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onBackToHome, isAdmin =
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="appearance-none relative block w-full px-3 py-3 pl-10 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                    placeholder={t('auth.password')}
+                    className="appearance-none relative block w-full px-4 py-4 pl-12 pr-12 border border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm transition-all duration-300 bg-gray-50 focus:bg-white"
+                    placeholder="••••••••"
                   />
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
@@ -139,7 +166,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onBackToHome, isAdmin =
             <div className="flex items-center justify-between">
               <button
                 type="button"
-                className="text-sm text-blue-600 hover:text-blue-500"
+                className="text-sm text-blue-600 hover:text-blue-500 font-medium transition-colors"
               >
                 {t('auth.forgotPassword')}
               </button>
@@ -149,13 +176,20 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onBackToHome, isAdmin =
               <button
                 type="submit"
                 disabled={loading}
-                className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white transition-colors ${
+                className={`group relative w-full flex justify-center py-4 px-4 border border-transparent text-sm font-bold rounded-xl text-white transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none ${
                   isAdmin 
-                    ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' 
-                    : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+                    ? 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:ring-red-500 shadow-lg hover:shadow-xl' 
+                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:ring-blue-500 shadow-lg hover:shadow-xl'
+                }`}
               >
-                {loading ? t('common.loading') : t('auth.signIn')}
+                {loading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>{t('common.loading')}</span>
+                  </div>
+                ) : (
+                  <span>{t('auth.signIn')}</span>
+                )}
               </button>
             </div>
 
@@ -166,7 +200,7 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onBackToHome, isAdmin =
                   <button
                     type="button"
                     onClick={onSwitchToSignup}
-                    className="font-medium text-blue-600 hover:text-blue-500"
+                    className="font-bold text-blue-600 hover:text-blue-500 transition-colors"
                   >
                     {t('auth.signUp')}
                   </button>
@@ -175,13 +209,18 @@ export function LoginForm({ onSuccess, onSwitchToSignup, onBackToHome, isAdmin =
             )}
 
             {/* Demo credentials */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-xs text-gray-600 mb-2">Demo credentials:</p>
-              <p className="text-xs text-gray-500">User: voyageur@example.com / password</p>
-              <p className="text-xs text-gray-500">Sender: expediteur@example.com / password</p>
-              {isAdmin && (
-                <p className="text-xs text-gray-500">Admin: admin@example.com / password</p>
-              )}
+            <div className="mt-8 p-6 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-200">
+              <p className="text-xs font-bold text-gray-700 mb-3 flex items-center">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                Comptes de démonstration
+              </p>
+              <div className="space-y-2 text-xs text-gray-600">
+                <p><span className="font-medium">Utilisateur:</span> voyageur@example.com / password</p>
+                <p><span className="font-medium">Expéditeur:</span> expediteur@example.com / password</p>
+                {isAdmin && (
+                  <p><span className="font-medium text-red-600">Admin:</span> admin@example.com / password</p>
+                )}
+              </div>
             </div>
           </form>
         </div>
